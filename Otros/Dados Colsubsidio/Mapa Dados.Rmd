@@ -1,0 +1,61 @@
+---
+title: "Propensión de Uso Dados Colsubsidio"
+author: "Inteligencia de Negocios"
+date: "29 de agosto de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(data.table)
+library(leaflet.extras)
+library(RColorBrewer)
+```
+
+# Mapas de Propensión de uso de Servicios de Dados Colsubsidio.
+
+El siguiente mapa interactivo muestra el mapa de calor de los afiliados según su probabilidad estimada de uso para cada uno de los servicios potencialmente ofertados por los dados Colsubsidio. Adicionalmente, se calcula la probabilidad de tomar una membresía
+
+Además, se muestra la localización de los 3 puntos en los que se brindaría el servicio
+
+```{r data, echo=FALSE}
+### Datos ----
+
+db<-readRDS("../BD/Depuradas/BD.rds")
+puntos<-fread("../BD/Puntos.csv")
+
+# Icono
+Recreacion <- makeIcon(
+  iconUrl = "../Recreacion.png",
+  iconWidth = 30, iconHeight = 40)
+```
+
+## Mapa de Localizacion de Afiliados
+
+```{r mapa1, echo=F, fig.align='center'}
+leaflet(options = leafletOptions(zoomControl = FALSE, attributionControl=FALSE, minZoom = 11, maxZoom = 13)) %>% 
+  addProviderTiles(providers$Stamen.Toner) %>% 
+  setView(lat=4.6477908, lng = -74.108419, zoom = 11) %>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, radius=8, max=0.1)
+
+```
+
+## Mapa de Propensión de Servicios
+
+```{r mapa, echo=F, fig.align='center'}
+leaflet(options = leafletOptions(zoomControl = FALSE, attributionControl=FALSE, minZoom = 11, maxZoom = 13)) %>% 
+  addProviderTiles(providers$Stamen.Toner) %>% 
+  setView(lat=4.6477908, lng = -74.108419, zoom = 11) %>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Futbol, radius = 7, max=0.1, blur=20, gradient="Greens", group = "Futbol")%>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Juegos, radius = 7, max=0.1, blur=20, gradient="Blues", group = "Juegos") %>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Fisico, radius = 7, max=0.1, blur=20, gradient="Oranges", group = "Físico") %>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Yoga, radius = 7, max=0.1, blur=20, gradient="Reds", group = "Yoga") %>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Infantil, radius = 7, max=0.1, blur=20, gradient="Purples", group = "Infantil") %>% 
+  addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Membresia, radius = 7, max=0.1, blur=20, gradient="Greys", group = "Membresia") %>%
+  addMarkers(data = puntos, lng = ~CY, lat = ~CX, popup=~Punto, icon = Recreacion) %>% 
+  addLayersControl(baseGroups = c("Futbol", "Juegos", "Físico", "Yoga", "Infantil", "Membresia"),
+                   options = layersControlOptions(collapsed = FALSE))
+```
+
+
