@@ -20,38 +20,37 @@ function(input, output) {
     aux1<-aux1 %>% filter(Dist_V<=input$Distancia)
   })
   
-### Mapas de Residencia ----
-  
-  output$MapaVivien <- renderLeaflet({
-    leaflet(options = leafletOptions(zoomControl = FALSE, attributionControl=FALSE, minZoom = 10, maxZoom = 14)) %>%
-      addProviderTiles(providers$Stamen.Toner) %>%
-      setView(lat=4.6477908, lng = -74.108419, zoom = 11) %>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, radius=9, max=0.3)
-    })
-  
-  output$Propension <- renderLeaflet({
+# ### Mapas de Residencia ----
+#   
+#   output$MapaVivien <- renderLeaflet({
+#     leaflet(options = leafletOptions(zoomControl = FALSE, attributionControl=FALSE, minZoom = 10, maxZoom = 14)) %>%
+#       addProviderTiles(providers$Stamen.Toner) %>%
+#       setView(lat=4.6477908, lng = -74.108419, zoom = 11) %>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, radius=9, max=0.3)
+#     })
+#   
+#   output$Propension <- renderLeaflet({
+# 
+#     Recreacion <- makeIcon(
+#       iconUrl = "Recreacion.png",
+#       iconWidth = 30, iconHeight = 40)
+# 
+#     leaflet(options = leafletOptions(zoomControl = FALSE, attributionControl=FALSE, minZoom = 11, maxZoom = 13)) %>%
+#       addProviderTiles(providers$Stamen.Toner) %>%
+#       setView(lat=4.6477908, lng = -74.108419, zoom = 11) %>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Futbol, radius = 7, max=0.1, blur=20, gradient="Greens", group = "Futbol")%>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Juegos, radius = 7, max=0.1, blur=20, gradient="Blues", group = "Juegos") %>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Fisico, radius = 7, max=0.1, blur=20, gradient="Oranges", group = "Físico") %>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Yoga, radius = 7, max=0.1, blur=20, gradient="Reds", group = "Yoga") %>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Infantil, radius = 7, max=0.1, blur=20, gradient="Purples", group = "Infantil") %>%
+#       addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Membresia, radius = 7, max=0.1, blur=20, gradient="Greys", group = "Membresia") %>%
+#       addMarkers(data = puntos, lng = ~CY, lat = ~CX, label=~Punto, icon = Recreacion) %>%
+#       addLayersControl(baseGroups = c("Futbol", "Juegos", "Físico", "Yoga", "Infantil", "Membresia"),
+#                        options = layersControlOptions(collapsed = FALSE))
+#   })
+#   
+# ### Mapas de Trabajo ----
 
-    Recreacion <- makeIcon(
-      iconUrl = "Recreacion.png",
-      iconWidth = 30, iconHeight = 40)
-
-    leaflet(options = leafletOptions(zoomControl = FALSE, attributionControl=FALSE, minZoom = 11, maxZoom = 13)) %>%
-      addProviderTiles(providers$Stamen.Toner) %>%
-      setView(lat=4.6477908, lng = -74.108419, zoom = 11) %>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Futbol, radius = 7, max=0.1, blur=20, gradient="Greens", group = "Futbol")%>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Juegos, radius = 7, max=0.1, blur=20, gradient="Blues", group = "Juegos") %>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Fisico, radius = 7, max=0.1, blur=20, gradient="Oranges", group = "Físico") %>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Yoga, radius = 7, max=0.1, blur=20, gradient="Reds", group = "Yoga") %>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Infantil, radius = 7, max=0.1, blur=20, gradient="Purples", group = "Infantil") %>%
-      addHeatmap(data = db, lat = ~cy, lng = ~cx, intensity = ~Membresia, radius = 7, max=0.1, blur=20, gradient="Greys", group = "Membresia") %>%
-      addMarkers(data = puntos, lng = ~CY, lat = ~CX, label=~Punto, icon = Recreacion) %>%
-      addLayersControl(baseGroups = c("Futbol", "Juegos", "Físico", "Yoga", "Infantil", "Membresia"),
-                       options = layersControlOptions(collapsed = FALSE))
-  })
-  
-### Mapas de Trabajo ----
-  
-  
 ### Hoja de Resumen -----
 
   output$MapaPunto <- renderLeaflet({
@@ -67,7 +66,6 @@ function(input, output) {
       addMarkers(data = aux_punto, lng = ~long, lat = ~lat, label=~id, icon = Recreacion) %>% 
       addCircles(data = aux_punto, lng = ~long, lat = ~lat, color = "steelblue", radius = input$Distancia*1000)
   })
-  
   output$Afiliados <- renderValueBox({
     aux1<-bd_v()
     valueBox(
@@ -77,7 +75,6 @@ function(input, output) {
       color = "blue"
     )
   })
-  
   output$Empresas <- renderValueBox({
     aux1<-bd_t()
     valueBox(
@@ -87,7 +84,6 @@ function(input, output) {
              color = "aqua"
     )
   })
-  
   output$Futbol <- renderDataTable({
     t1<-bd_v() %>%
       select(id_afiliado, var=Futbol) %>% 
@@ -115,7 +111,6 @@ function(input, output) {
               colnames = c("Rango", "Viven", "Trabajan")) %>%
       formatRound(c("Viven","Trabajan"), digits = 0)
   })
-  
   output$Juegos <- renderDataTable({
     t1<-bd_v() %>%
       select(id_afiliado, var=Juegos) %>% 
@@ -143,8 +138,6 @@ function(input, output) {
               colnames = c("Rango", "Viven", "Trabajan")) %>%
       formatRound(c("Viven","Trabajan"), digits = 0)
   })
-  
-  
   output$Fisico <- renderDataTable({
     t1<-bd_v() %>%
       select(id_afiliado, var=Fisico) %>% 
@@ -172,8 +165,6 @@ function(input, output) {
               colnames = c("Rango", "Viven", "Trabajan")) %>%
       formatRound(c("Viven","Trabajan"), digits = 0)
   })
-  
-  
   output$Yoga <- renderDataTable({
     t1<-bd_v() %>%
       select(id_afiliado, var=Yoga) %>% 
@@ -201,7 +192,6 @@ function(input, output) {
               colnames = c("Rango", "Viven", "Trabajan")) %>%
       formatRound(c("Viven","Trabajan"), digits = 0)
   })
-  
   output$Infantiles <- renderDataTable({
     t1<-bd_v() %>%
       select(id_afiliado, var=Infantil) %>% 
@@ -229,7 +219,6 @@ function(input, output) {
               colnames = c("Rango", "Viven", "Trabajan")) %>%
       formatRound(c("Viven","Trabajan"), digits = 0)
   })
-  
   output$Membresia <- renderDataTable({
     t1<-bd_v() %>%
       select(id_afiliado, var=Membresia) %>% 
@@ -257,7 +246,6 @@ function(input, output) {
               colnames = c("Rango", "Viven", "Trabajan")) %>%
       formatRound(c("Viven","Trabajan"), digits = 0)
   })
-  
   output$Resumen <- renderDataTable({
     aux1<-bd_t() %>% 
       group_by(`Piramide 1`, `Piramide 2`, `RAZON SOCIAL`) %>% 
@@ -270,8 +258,13 @@ function(input, output) {
                 Membresia=mean(Membresia)
                 )
     
-    datatable(aux1, options=list(pageLength = 20,dom = 'tl',searching= FALSE), rownames=F) %>%
+    datatable(aux1, options=list(pageLength = 10,dom = 'ltl',searching= FALSE), rownames=F) %>%
       formatRound(c("Afiliados"), digits = 0) %>% 
       formatRound(c("Futbol","Juegos","Fisico","Yoga","Infantiles", "Membresia"), digits=4)
   })
+  
+### Ficha Técnica ----
+  
+  
+  
 }
